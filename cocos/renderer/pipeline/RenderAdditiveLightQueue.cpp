@@ -348,9 +348,9 @@ void RenderAdditiveLightQueue::updateLightDescriptorSet(const scene::Camera *cam
                 const auto &matShadowCamera = light->getNode()->getWorldMatrix();
                 const auto  matShadowView   = matShadowCamera.getInversed();
 
-                cc::Mat4 matShadowViewProj;
-                cc::Mat4::createPerspective(spotLight->getSpotAngle(), spotLight->getAspect(), 0.001F, spotLight->getRange(), &matShadowViewProj);
-                cc::Mat4 matShadowProj = matShadowViewProj;
+                cc::Mat4 matShadowProj;
+                cc::Mat4::createPerspective(spotLight->getSpotAngle(), spotLight->getAspect(), 0.001F, spotLight->getRange(), &matShadowProj);
+                cc::Mat4 matShadowViewProj = matShadowProj;
                 cc::Mat4 matShadowInvProj = matShadowProj;
                 matShadowInvProj.inverse();
 

@@ -198,8 +198,9 @@ void PipelineUBO::updateShadowUBOView(const RenderPipeline *pipeline, std::array
             const auto matShadowView = matShadowCamera.getInversed();
 
             const auto projectionSinY = device->getCapabilities().clipSpaceSignY;
-            Mat4::createOrthographicOffCenter(-x, x, -y, y, shadowInfo->nearValue, farClamp, device->getCapabilities().clipSpaceMinZ, projectionSinY, &matShadowViewProj);
-            Mat4  matShadowProj           = matShadowViewProj;
+            Mat4 matShadowProj;
+            Mat4::createOrthographicOffCenter(-x, x, -y, y, shadowInfo->nearValue, farClamp, device->getCapabilities().clipSpaceMinZ, projectionSinY, &matShadowProj);
+            matShadowViewProj = matShadowProj;
             matShadowViewProj.multiply(matShadowView);
 
             memcpy(shadowUBO.data() + UBOShadow::MAT_LIGHT_VIEW_OFFSET, matShadowView.m, sizeof(matShadowView));
