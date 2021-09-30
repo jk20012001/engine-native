@@ -45,6 +45,7 @@ public:
 
     inline void setAABB(AABB *aabb) { _aabb = aabb; }
     inline void setIlluminance(float illum) { _illuminance = illum; }
+    inline void setIlluminance_ldr(float illum) { _illuminance_ldr = illum; }
     inline void setPosition(const Vec3 &pos) { _pos = pos; }
     inline void setRange(float range) {
         _range      = range;
@@ -54,6 +55,7 @@ public:
 
     inline AABB *      getAABB() const { return _aabb; }
     inline float       getIlluminance() const { return _illuminance; }
+    inline float       getIlluminance_ldr() const { return _illuminance_ldr; }
     inline const Vec3 &getPosition() const { return _pos; }
     inline float       getRange() const { return _range; }
     inline float       getSize() const { return _size; }
@@ -61,6 +63,7 @@ public:
 private:
     bool  _needUpdate{false};
     float _illuminance{0.F};
+    float _illuminance_ldr{0.F};
     float _range{0.F};
     float _size{0.F};
     Vec3  _pos;
