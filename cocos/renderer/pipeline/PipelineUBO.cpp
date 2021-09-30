@@ -118,7 +118,7 @@ void PipelineUBO::updateCameraUBOView(const RenderPipeline *pipeline, float *out
             }
         }
         else {
-            output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminance_ldr();
+            output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminanceLDR();
         }
     } else {
         TO_VEC3(output, Vec3::UNIT_Z, UBOCamera::MAIN_LIT_DIR_OFFSET);
