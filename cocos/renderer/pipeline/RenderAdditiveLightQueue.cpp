@@ -228,9 +228,11 @@ void RenderAdditiveLightQueue::addRenderQueue(const scene::Pass *pass, const sce
 }
 
 void RenderAdditiveLightQueue::updateUBOs(const scene::Camera *camera, gfx::CommandBuffer *cmdBuffer) {
-    const auto  exposure        = camera->exposure;
-    const auto  validLightCount = _validLights.size();
-    auto *const sceneData       = _pipeline->getPipelineSceneData();
+    const auto  exposure            = camera->exposure;
+    const auto  validLightCount     = _validLights.size();
+    auto *const sceneData           = _pipeline->getPipelineSceneData();
+    const bool  useDeferredPipeline = !dynamic_cast<ForwardPipeline *>(_pipeline);
+
     auto *const sharedData      = sceneData->getSharedData();
     const auto *shadowInfo      = sharedData->shadow;
     size_t      offset          = 0;
@@ -272,11 +274,16 @@ void RenderAdditiveLightQueue::updateUBOs(const scene::Camera *camera, gfx::Comm
             _lightBufferData[index++] = color.z;
         }
 
-        float illuminance = isSpotLight ? spotLight->getIlluminance() : sphereLight->getIlluminance();
+        float illuminance_hdr = isSpotLight ? spotLight->getIlluminance() : sphereLight->getIlluminance();
+        float illuminance_ldr = isSpotLight ? spotLight->getIlluminance_ldr() : sphereLight->getIlluminance_ldr();
         if (sharedData->isHDR) {
-            _lightBufferData[index] = illuminance * sharedData->fpScale * _lightMeterScale;
+            if (useDeferredPipeline) {
+                _lightBufferData[index] = illuminance_hdr * sharedData->fpScale * _lightMeterScale;
+            } else {
+                _lightBufferData[index] = illuminance_hdr * exposure * _lightMeterScale;
+            }
         } else {
-            _lightBufferData[index] = illuminance * exposure * _lightMeterScale;
+            _lightBufferData[index] = illuminance_ldr;
         }
 
         switch (light->getType()) {

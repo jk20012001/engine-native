@@ -29,6 +29,7 @@
 #include "gfx-base/GFXDevice.h"
 #include "platform/Application.h"
 #include "scene/RenderScene.h"
+#include "forward/ForwardPipeline.h"
 
 namespace cc {
 
@@ -71,16 +72,17 @@ void PipelineUBO::updateGlobalUBOView(const scene::Camera *camera, std::array<fl
 }
 
 void PipelineUBO::updateCameraUBOView(const RenderPipeline *pipeline, float *output, const scene::Camera *camera) {
-    const auto *const              scene         = camera->scene;
-    const scene::DirectionalLight *mainLight     = scene->getMainLight();
-    auto *                         sceneData     = pipeline->getPipelineSceneData();
-    auto *const                    sharedData    = sceneData->getSharedData();
-    const auto                     fpScale       = sharedData->fpScale;
-    auto *const                    descriptorSet = pipeline->getDescriptorSet();
-    auto *                         ambient       = sharedData->ambient;
-    auto *                         fog           = sharedData->fog;
-    const auto                     isHDR         = sharedData->isHDR;
-    const auto                     shadingScale  = sharedData->shadingScale;
+    const auto *const              scene               = camera->scene;
+    const scene::DirectionalLight *mainLight           = scene->getMainLight();
+    auto *                         sceneData           = pipeline->getPipelineSceneData();
+    auto *const                    sharedData          = sceneData->getSharedData();
+    const auto                     fpScale             = sharedData->fpScale;
+    auto *const                    descriptorSet       = pipeline->getDescriptorSet();
+    auto *                         ambient             = sharedData->ambient;
+    auto *                         fog                 = sharedData->fog;
+    const auto                     isHDR               = sharedData->isHDR;
+    const auto                     shadingScale        = sharedData->shadingScale;
+    const bool                     useDeferredPipeline = !dynamic_cast<ForwardPipeline *>((RenderPipeline *)pipeline);
 
     auto *device = gfx::Device::getInstance();
 
@@ -109,9 +111,14 @@ void PipelineUBO::updateCameraUBOView(const RenderPipeline *pipeline, float *out
         }
 
         if (isHDR) {
-            output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminance() * fpScale;
-        } else {
-            output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminance() * exposure;
+            if (useDeferredPipeline) {
+                output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminance() * fpScale;
+            } else {
+                output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminance() * exposure;
+            }
+        }
+        else {
+            output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminance_ldr();
         }
     } else {
         TO_VEC3(output, Vec3::UNIT_Z, UBOCamera::MAIN_LIT_DIR_OFFSET);
@@ -120,9 +127,14 @@ void PipelineUBO::updateCameraUBOView(const RenderPipeline *pipeline, float *out
 
     Vec4 skyColor = ambient->skyColor;
     if (isHDR) {
-        skyColor.w = ambient->skyIllum * fpScale;
-    } else {
-        skyColor.w = ambient->skyIllum * exposure;
+        if (useDeferredPipeline) {
+            skyColor.w = ambient->skyIllum * fpScale;
+        } else {
+            skyColor.w = ambient->skyIllum * exposure;
+        }
+    }
+    else {
+        skyColor.w = ambient->skyIllum;
     }
     TO_VEC4(output, skyColor, UBOCamera::AMBIENT_SKY_OFFSET)
 
