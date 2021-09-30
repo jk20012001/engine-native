@@ -56,7 +56,7 @@ public:
     inline void setDirection(const Vec3 &dir) { _dir = dir; }
     inline void setFrustum(Frustum frustum) { _frustum = std::move(frustum); }
     inline void setIlluminance(float illu) { _illuminance = illu; }
-    inline void setIlluminance_ldr(float illu) { _illuminance_ldr = illu; }
+    inline void setIlluminanceLDR(float illu) { _illuminanceLDR = illu; }
     inline void setNeedUpdate(bool value) { _needUpdate = value; }
     inline void setRange(float range) {
         _range      = range;
@@ -72,7 +72,7 @@ public:
     inline const Vec3 &   getDirection() const { return _dir; }
     inline const Frustum &getFrustum() const { return _frustum; }
     inline float          getIlluminance() const { return _illuminance; }
-    inline float          getIlluminance_ldr() const { return _illuminance_ldr; }
+    inline float          getIlluminanceLDR() const { return _illuminanceLDR; }
     inline bool           getNeedUpdate() const { return _needUpdate; }
     inline float          getRange() const { return _range; }
     inline const Vec3 &   getPosition() const { return _pos; }
@@ -81,7 +81,7 @@ public:
 private:
     bool    _needUpdate{false};
     float   _illuminance{0.F};
-    float   _illuminance_ldr{0.F};
+    float   _illuminanceLDR{0.F};
     float   _range{0.F};
     float   _size{0.F};
     float   _angle{0.F};

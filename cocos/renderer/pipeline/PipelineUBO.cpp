@@ -82,7 +82,7 @@ void PipelineUBO::updateCameraUBOView(const RenderPipeline *pipeline, float *out
     auto *                         fog                 = sharedData->fog;
     const auto                     isHDR               = sharedData->isHDR;
     const auto                     shadingScale        = sharedData->shadingScale;
-    const bool                     useDeferredPipeline = !dynamic_cast<ForwardPipeline *>((RenderPipeline *)pipeline);
+    const bool                     useDeferredPipeline = !const_cast<ForwardPipeline *>((RenderPipeline *)pipeline);
 
     auto *device = gfx::Device::getInstance();
 
