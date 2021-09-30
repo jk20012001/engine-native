@@ -163,7 +163,7 @@ void LightingStage::gatherLights(scene::Camera *camera) {
                 tmpArray.w = light->getIlluminance() * exposure * _lightMeterScale;
             }
         } else {
-            tmpArray.w = light->getIlluminance_ldr();
+            tmpArray.w = light->getIlluminanceLDR();
         }
 
         _lightBufferData[offset + 0] = tmpArray.x;
@@ -218,7 +218,7 @@ void LightingStage::gatherLights(scene::Camera *camera) {
                 tmpArray.w = light->getIlluminance() * exposure * _lightMeterScale;
             }
         } else {
-            tmpArray.w = light->getIlluminance_ldr();
+            tmpArray.w = light->getIlluminanceLDR();
         }
 
         _lightBufferData[offset + 0] = tmpArray.x;
