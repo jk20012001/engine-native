@@ -158,12 +158,12 @@ void LightingStage::gatherLights(scene::Camera *camera) {
 
         if (sharedData->isHDR) {
             if (useDeferredPipeline) {
-                tmpArray.w = light->getIlluminance() * sharedData->fpScale * _lightMeterScale;
+                tmpArray.w = light->getLuminanceHDR() * sharedData->fpScale * _lightMeterScale;
             } else {
-                tmpArray.w = light->getIlluminance() * exposure * _lightMeterScale;
+                tmpArray.w = light->getLuminanceHDR() * exposure * _lightMeterScale;
             }
         } else {
-            tmpArray.w = light->getIlluminanceLDR();
+            tmpArray.w = light->getLuminanceLDR();
         }
 
         _lightBufferData[offset + 0] = tmpArray.x;
@@ -213,12 +213,12 @@ void LightingStage::gatherLights(scene::Camera *camera) {
 
         if (sharedData->isHDR) {
             if (useDeferredPipeline) {
-                tmpArray.w = light->getIlluminance() * sharedData->fpScale * _lightMeterScale;
+                tmpArray.w = light->getLuminanceHDR() * sharedData->fpScale * _lightMeterScale;
             } else {
-                tmpArray.w = light->getIlluminance() * exposure * _lightMeterScale;
+                tmpArray.w = light->getLuminanceHDR() * exposure * _lightMeterScale;
             }
         } else {
-            tmpArray.w = light->getIlluminanceLDR();
+            tmpArray.w = light->getLuminanceLDR();
         }
 
         _lightBufferData[offset + 0] = tmpArray.x;
