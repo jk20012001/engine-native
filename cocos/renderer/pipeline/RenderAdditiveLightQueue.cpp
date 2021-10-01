@@ -274,16 +274,16 @@ void RenderAdditiveLightQueue::updateUBOs(const scene::Camera *camera, gfx::Comm
             _lightBufferData[index++] = color.z;
         }
 
-        float illuminanceHDR = isSpotLight ? spotLight->getIlluminance() : sphereLight->getIlluminance();
-        float illuminanceLDR = isSpotLight ? spotLight->getIlluminanceLDR() : sphereLight->getIlluminanceLDR();
+        float luminanceHDR = isSpotLight ? spotLight->getLuminanceHDR() : sphereLight->getLuminanceHDR();
+        float luminanceLDR = isSpotLight ? spotLight->getLuminanceLDR() : sphereLight->getLuminanceLDR();
         if (sharedData->isHDR) {
             if (useDeferredPipeline) {
-                _lightBufferData[index] = illuminanceHDR * sharedData->fpScale * _lightMeterScale;
+                _lightBufferData[index] = luminanceHDR * sharedData->fpScale * _lightMeterScale;
             } else {
-                _lightBufferData[index] = illuminanceHDR * exposure * _lightMeterScale;
+                _lightBufferData[index] = luminanceHDR * exposure * _lightMeterScale;
             }
         } else {
-            _lightBufferData[index] = illuminanceLDR;
+            _lightBufferData[index] = luminanceLDR;
         }
 
         switch (light->getType()) {
