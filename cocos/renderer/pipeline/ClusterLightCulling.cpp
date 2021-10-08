@@ -197,11 +197,16 @@ void ClusterLightCulling::updateLights() {
             _lightBufferData[index++] = color.z;
         }
 
-        float illuminance = isSpotLight ? spotLight->getIlluminance() : sphereLight->getIlluminance();
+        float luminanceHDR = isSpotLight ? spotLight->getLuminanceHDR() : sphereLight->getLuminanceHDR();
+        float luminanceLDR = isSpotLight ? spotLight->getLuminanceLDR() : sphereLight->getLuminanceLDR();
         if (sharedData->isHDR) {
-            _lightBufferData[index] = illuminance * sharedData->fpScale * _lightMeterScale;
+            if (useDeferredPipeline) {
+                _lightBufferData[index] = luminanceHDR * sharedData->fpScale * _lightMeterScale;
+            } else {
+                _lightBufferData[index] = luminanceHDR * exposure * _lightMeterScale;
+            }
         } else {
-            _lightBufferData[index] = illuminance * exposure * _lightMeterScale;
+            _lightBufferData[index] = illuminanceLDR;
         }
 
         switch (light->getType()) {

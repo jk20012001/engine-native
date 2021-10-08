@@ -112,9 +112,9 @@ void PipelineUBO::updateCameraUBOView(const RenderPipeline *pipeline, float *out
 
         if (isHDR) {
             if (useDeferredPipeline) {
-                output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminance() * fpScale;
+                output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminanceHDR() * fpScale;
             } else {
-                output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminance() * exposure;
+                output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminanceHDR() * exposure;
             }
         }
         else {
