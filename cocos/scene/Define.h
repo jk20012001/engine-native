@@ -95,7 +95,7 @@ struct Skybox {
     bool   isRGBE{false};
     bool   useIBL{false};
     bool   useHDR{true};
-    bool   useDiffusemap{false};
+    bool   useDiffuseMap{false};
     Model *model{nullptr};
 };
 
