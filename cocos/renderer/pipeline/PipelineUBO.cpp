@@ -76,13 +76,11 @@ void PipelineUBO::updateCameraUBOView(const RenderPipeline *pipeline, float *out
     const scene::DirectionalLight *mainLight           = scene->getMainLight();
     auto *                         sceneData           = pipeline->getPipelineSceneData();
     auto *const                    sharedData          = sceneData->getSharedData();
-    const auto                     fpScale             = sharedData->fpScale;
     auto *const                    descriptorSet       = pipeline->getDescriptorSet();
     auto *                         ambient             = sharedData->ambient;
     auto *                         fog                 = sharedData->fog;
     const auto                     isHDR               = sharedData->isHDR;
     const auto                     shadingScale        = sharedData->shadingScale;
-    const bool                     useDeferredPipeline = !static_cast<const ForwardPipeline *>(pipeline);
 
     auto *device = gfx::Device::getInstance();
 
@@ -98,7 +96,7 @@ void PipelineUBO::updateCameraUBOView(const RenderPipeline *pipeline, float *out
     output[UBOCamera::EXPOSURE_OFFSET + 0] = exposure;
     output[UBOCamera::EXPOSURE_OFFSET + 1] = 1.0F / exposure;
     output[UBOCamera::EXPOSURE_OFFSET + 2] = isHDR ? 1.0F : 0.0F;
-    output[UBOCamera::EXPOSURE_OFFSET + 3] = fpScale / exposure;
+    output[UBOCamera::EXPOSURE_OFFSET + 3] = 0.0F;
 
     if (mainLight) {
         TO_VEC3(output, mainLight->getDirection(), UBOCamera::MAIN_LIT_DIR_OFFSET)
@@ -111,11 +109,7 @@ void PipelineUBO::updateCameraUBOView(const RenderPipeline *pipeline, float *out
         }
 
         if (isHDR) {
-            if (useDeferredPipeline) {
-                output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminanceHDR() * fpScale;
-            } else {
-                output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminanceHDR() * exposure;
-            }
+            output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminanceHDR() * exposure;
         }
         else {
             output[UBOCamera::MAIN_LIT_COLOR_OFFSET + 3] = mainLight->getIlluminanceLDR();
@@ -127,11 +121,7 @@ void PipelineUBO::updateCameraUBOView(const RenderPipeline *pipeline, float *out
 
     Vec4 skyColor = ambient->skyColor;
     if (isHDR) {
-        if (useDeferredPipeline) {
-            skyColor.w = ambient->skyIllum * fpScale;
-        } else {
-            skyColor.w = ambient->skyIllum * exposure;
-        }
+        skyColor.w = ambient->skyIllum * exposure;
     }
     else {
         skyColor.w = ambient->skyIllum;

@@ -161,7 +161,6 @@ void ClusterLightCulling::updateLights() {
     const auto  validLightCount     = _validLights.size();
     auto* const sceneData           = _pipeline->getPipelineSceneData();
     auto* const sharedData          = sceneData->getSharedData();
-    const bool  useDeferredPipeline = static_cast<DeferredPipeline*>(_pipeline);
 
     if (validLightCount > _lightBufferCount) {
         _lightBufferResized = true;
@@ -201,11 +200,7 @@ void ClusterLightCulling::updateLights() {
         float luminanceHDR = isSpotLight ? spotLight->getLuminanceHDR() : sphereLight->getLuminanceHDR();
         float luminanceLDR = isSpotLight ? spotLight->getLuminanceLDR() : sphereLight->getLuminanceLDR();
         if (sharedData->isHDR) {
-            if (useDeferredPipeline) {
-                _lightBufferData[index] = luminanceHDR * sharedData->fpScale * _lightMeterScale;
-            } else {
-                _lightBufferData[index] = luminanceHDR * exposure * _lightMeterScale;
-            }
+            _lightBufferData[index] = luminanceHDR * exposure * _lightMeterScale;
         } else {
             _lightBufferData[index] = luminanceLDR;
         }
