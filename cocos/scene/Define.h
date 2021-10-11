@@ -109,7 +109,6 @@ struct Ambient {
 struct PipelineSharedSceneData {
     bool         isHDR{true};
     float        shadingScale{0.0F};
-    float        fpScale{0.0F};
     Ambient *    ambient{nullptr};
     Shadow *     shadow{nullptr};
     Skybox *     skybox{nullptr};

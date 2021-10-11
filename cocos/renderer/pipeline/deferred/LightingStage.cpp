@@ -113,7 +113,6 @@ void LightingStage::gatherLights(scene::Camera *camera) {
     auto *      pipeline           = static_cast<DeferredPipeline *>(_pipeline);
     auto *const sceneData          = _pipeline->getPipelineSceneData();
     auto *const sharedData         = sceneData->getSharedData();
-    const bool useDeferredPipeline = true;
 
     gfx::CommandBuffer *cmdBuf = pipeline->getCommandBuffers()[0];
     const auto *        scene  = camera->scene;
@@ -157,11 +156,7 @@ void LightingStage::gatherLights(scene::Camera *camera) {
         }
 
         if (sharedData->isHDR) {
-            if (useDeferredPipeline) {
-                tmpArray.w = light->getLuminanceHDR() * sharedData->fpScale * _lightMeterScale;
-            } else {
-                tmpArray.w = light->getLuminanceHDR() * exposure * _lightMeterScale;
-            }
+            tmpArray.w = light->getLuminanceHDR() * exposure * _lightMeterScale;
         } else {
             tmpArray.w = light->getLuminanceLDR();
         }
@@ -212,11 +207,7 @@ void LightingStage::gatherLights(scene::Camera *camera) {
         }
 
         if (sharedData->isHDR) {
-            if (useDeferredPipeline) {
-                tmpArray.w = light->getLuminanceHDR() * sharedData->fpScale * _lightMeterScale;
-            } else {
-                tmpArray.w = light->getLuminanceHDR() * exposure * _lightMeterScale;
-            }
+            tmpArray.w = light->getLuminanceHDR() * exposure * _lightMeterScale;
         } else {
             tmpArray.w = light->getLuminanceLDR();
         }
