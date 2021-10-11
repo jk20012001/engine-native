@@ -231,7 +231,6 @@ void RenderAdditiveLightQueue::updateUBOs(const scene::Camera *camera, gfx::Comm
     const auto  exposure            = camera->exposure;
     const auto  validLightCount     = _validLights.size();
     auto *const sceneData           = _pipeline->getPipelineSceneData();
-    const bool  useDeferredPipeline = !dynamic_cast<ForwardPipeline *>(_pipeline);
 
     auto *const sharedData      = sceneData->getSharedData();
     const auto *shadowInfo      = sharedData->shadow;
